@@ -1,5 +1,5 @@
 import logging
-from flask import Blueprint, request, jsonify, current_app, redirect, url_for
+from flask import Blueprint, request, jsonify, current_app, redirect, url_for, session, render_template
 from bson.objectid import ObjectId
 from .utils import check_required_fields
 
@@ -16,7 +16,7 @@ def get_posts():
         posts = list(current_app.db.posts.find())
         for post in posts:
             post['_id'] = str(post['_id'])
-        return jsonify(posts), 200
+        return render_template('pages/main.html', posts=posts)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -104,7 +104,7 @@ def delete_post(post_id):
 ## 참여 여부 ##
 
 @posts_bp.route('/posts/<post_id>/participation', methods=['PUT'])
-def participate_post(post_id):
+def participate(post_id):
     try:
         data = request.get_json()
         #! 로그인 기능 구현 후 수정 세션으로 얻기(-)
