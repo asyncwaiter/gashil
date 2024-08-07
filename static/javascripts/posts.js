@@ -33,17 +33,43 @@ const spreadFilters = () => {
   });
 };
 
-const getDateTime = () => {
-  const cal = document.getElementById('datepicker-autohide');
-  const time = document.getElementById('time');
+const controlLimitBtn = () => {
+  const minusBtn = document.getElementById('minus_button');
+  const plusBtn = document.getElementById('plus_button');
+  const limitElm = document.getElementById('rides_limit');
 
-  const date = new Date();
-  let hour = date.getHours();
-  let min = date.getMinutes();
-  if (hour < 10) hour = `0${hour}`;
-  if (min < 10) min = `0${min}`;
+  minusBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    let rides_limit = parseInt(document.getElementById('rides_limit').value);
+    if (rides_limit > 1) {
+      limitElm.value = rides_limit - 1;
+    }
+  });
+  plusBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    let rides_limit = parseInt(document.getElementById('rides_limit').value);
+    limitElm.value = rides_limit + 1;
+  });
+};
 
-  time.setAttribute('value', `${hour}:${min}`);
+const validatePostForm = () => {
+  const departure = document.getElementById('departure').value;
+  const destination = document.getElementById('destination').value;
+  const dateTime = document.getElementById('datetimepicker').value;
+  const rides_limit = document.getElementById('rides_limit').value;
+  const updateBtn = document.getElementById('request_post_btn');
+
+  if (!departure || !destination || !dateTime || !rides_limit) {
+    updateBtn.setAttribute('disabled', true);
+    updateBtn.classList.remove('bg-Primary');
+    updateBtn.classList.add('bg-Low');
+  } else {
+    updateBtn.removeAttribute('disabled');
+    updateBtn.classList.remove('bg-Low');
+    updateBtn.classList.add('bg-Primary');
+  }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -51,11 +77,17 @@ document.addEventListener('DOMContentLoaded', () => {
     enableTime: true,
     locale: 'ko',
     dateFormat: `Y년 m월 d일 (D) H:i`,
-    defaultDate: new Date(), // Set default date to current date and time
-    onChange: function (selectedDates, dateStr, instance) {
-      console.log('Selected date: ', dateStr);
-    },
+    defaultDate: new Date(),
   });
 
   spreadFilters();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  document
+    .getElementById('control_buttons_div')
+    .addEventListener('click', controlLimitBtn);
+  document
+    .getElementById('update_post_form')
+    .addEventListener('input', validatePostForm);
 });

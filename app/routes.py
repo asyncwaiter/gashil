@@ -26,4 +26,4 @@ def new_post_page():
 
 @routes_bp.route('/posts/<post_id>')
 def edit_post_page(post_id):
-    return render_template('', post_id=post_id)
+    return render_template('./pages/new.html', title='글쓰기')
